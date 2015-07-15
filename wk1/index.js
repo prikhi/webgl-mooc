@@ -88,9 +88,9 @@ function divideTriangle( a, b, c, count )
 function render()
 {
     var vertices = [
-        vec2( -1, -1 ),
-        vec2(  0,  1 ),
-        vec2(  1, -1 )
+        vec2( -0.75, -0.75 ),
+        vec2(  0,  0.75 ),
+        vec2(  0.75, -0.75 )
     ];
     points = [];
     divideTriangle( vertices[0], vertices[1], vertices[2],
