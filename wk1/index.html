@@ -1,8 +1,57 @@
+<!DOCTYPE html>
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
   <title>Twist & Tessellation</title>
+  <script type="text/javascript" src="../common/webgl-utils.js"></script>
+  <script type="text/javascript" src="../common/initShaders.js"></script>
+  <script type="text/javascript" src="../common/MV.js"></script>
+  <script type="text/javascript" src="index.js"></script>
+
+
+  <script id="vertex-shader" type="x-shader/x-vertex">
+attribute vec4 vPosition;
+
+void
+main()
+{
+    gl_Position = vPosition;
+}
+  </script>
+
+  <script id="fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+
+void
+main()
+{
+    gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );
+}
+  </script>
+
 </head>
 
 <body>
+  <canvas id="gl-canvas" width="512" height="512">
+  Oops ... your browser doesn't support the HTML5 canvas element
+  </canvas>
+
+  <hr />
+
+  <input type='number' id='recursionDepth' value='5' min='0' max='6' step='1'/>
+  <label for='recursionDepth'>Subdivisions</label>
+  <small>How many times should we divide the triangle?</small>
+
+  <br />
+
+  <input type='range' id='theta' value='0' min='0' max='4' step='0.1'/>
+  <label for='theta'>Theta</label>
+  <small>How many radians of twist should we apply?</small>
+
+  <br />
+
+  <input type='range' id='distanceFactor' value='1' min='0' max='3' step='0.1'/>
+  <label for='distanceFactor'>Distance Factor</label>
+  <small>How much does a points distance affect it's twist?</small>
 </body>
 </html>
