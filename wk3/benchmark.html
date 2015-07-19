@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+  <title>GPU Benchmark</title>
+  <script type="text/javascript" src="../common/webgl-utils.js"></script>
+  <script type="text/javascript" src="../common/initShaders.js"></script>
+  <script type="text/javascript" src="../common/MV.js"></script>
+  <script type="text/javascript" src="benchmark.js"></script>
+
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+attribute vec4 vPosition;
+uniform float uTheta;
+varying vec4 position;
+
+void main() {
+  position = vPosition;
+  float distance, theta;
+  distance = sqrt((vPosition.x * vPosition.x) + (vPosition.y * vPosition.y));
+  theta = uTheta * distance;
+  gl_Position.x = (vPosition.x * cos(theta)) - (vPosition.y * sin(theta));
+  gl_Position.y = (vPosition.x * sin(theta)) + (vPosition.y * cos(theta));
+  gl_Position.zw = vec2(0.0, 1.0);
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+varying vec4 position;
+
+void main() {
+  float distance, theta;
+  distance = sqrt((position.x * position.x) + (position.y * position.y));
+  gl_FragColor.r = (distance + 0.5) / 2.0;
+  gl_FragColor.b = 1.0 / distance;
+  gl_FragColor.g = distance * 1.15;
+  gl_FragColor.a = 1.0;
+}
+</script>
+
+</head>
+
+<body>
+  <small><a href='../index.html'>Home</a></small>
+  <h1>GPU Benchmark</h1>
+
+  <hr />
+
+  <canvas id="gl-canvas" width="512" height="512">
+  Oops ... your browser doesn't support the HTML5 canvas element
+  </canvas>
+
+  <hr />
+
+  <p>Rendering Time: <span id='renderTime'></span> milliseconds</p>
+
+  <input type='number' id='recursionDepth' value='5' min='0' step='1'/>
+  <label for='recursionDepth'>Subdivisions</label>
+  <small>How many times should we divide the triangle?</small>
+
+  <br />
+
+  <input type='range' id='theta' value='0' min='0' step='0.07' max='8'/>
+  <label for='theta'>Theta</label>
+  <small>The amount of twist.</small>
+
+</body>
+</html>
+
