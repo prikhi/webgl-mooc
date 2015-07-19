@@ -11,7 +11,6 @@
 
 <script id="vertex-shader" type="x-shader/x-vertex">
 attribute vec4 vPosition;
-attribute vec4 vColor;
 
 void main()
 {
@@ -36,6 +35,7 @@ void main()
     gl_FragColor.r = gl_FragCoord.x / 511.0;
     gl_FragColor.g = gl_FragCoord.y / 511.0;
     gl_FragColor.b = 1.0 - gl_FragColor.r - gl_FragColor.g;
+    gl_FragColor.a = 1.0;
 }
 </script>
 
@@ -62,10 +62,11 @@ void main()
         scalingFactor = scaledB;
       }
     }
-    gl_FragColor.rgb = vec3(
+    gl_FragColor.rgba = vec4(
       scaledR / scalingFactor,
       scaledG / scalingFactor,
-      scaledB / scalingFactor
+      scaledB / scalingFactor,
+      1.0
     );
 }
 </script>
@@ -79,7 +80,9 @@ void main()
     float scaledG = gl_FragCoord.y / 511.0;
     float scaledB = 1.0 - gl_FragColor.r - gl_FragColor.g;
 
-    gl_FragColor.rgb = vec3(scaledR * 0.299, scaledG * 0.587, scaledB * 0.114);
+    gl_FragColor.rgba = vec4(
+      scaledR * 0.299, scaledG * 0.587, scaledB * 0.114, 1.0
+    );
 }
 </script>
 
