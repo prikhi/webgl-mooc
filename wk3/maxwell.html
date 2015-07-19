@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+  <title>The Maxwell Triangle</title>
+  <script type="text/javascript" src="../common/webgl-utils.js"></script>
+  <script type="text/javascript" src="../common/initShaders.js"></script>
+  <script type="text/javascript" src="../common/MV.js"></script>
+  <script type="text/javascript" src="maxwell.js"></script>
+
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+attribute vec4 vPosition;
+attribute vec4 vColor;
+varying vec4 fColor;
+
+void main()
+{
+    gl_Position = vPosition;
+}
+</script>
+
+<script id="red-fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+
+void main()
+{
+    gl_FragColor = vec4(1, 0, 0, 1);
+}
+</script>
+
+<script id="maxwell-fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+
+void main()
+{
+    gl_FragColor.r = gl_FragCoord.x / 511.0;
+    gl_FragColor.g = gl_FragCoord.y / 511.0;
+    gl_FragColor.b = 1.0 - gl_FragColor.r - gl_FragColor.g;
+}
+</script>
+
+<script id="vibrant-maxwell-fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+
+void main()
+{
+    float scaledR = gl_FragCoord.x / 511.0;
+    float scaledG = gl_FragCoord.y / 511.0;
+    float scaledB = 1.0 - gl_FragColor.r - gl_FragColor.g;
+
+    float scalingFactor;
+    if (scaledR > scaledG) {
+      if (scaledR > scaledB) {
+        scalingFactor = scaledR;
+      } else {
+        scalingFactor = scaledB;
+      }
+    } else {
+      if (scaledG > scaledB) {
+        scalingFactor = scaledG;
+      } else {
+        scalingFactor = scaledB;
+      }
+    }
+    gl_FragColor.rgb = vec3(
+      scaledR / scalingFactor,
+      scaledG / scalingFactor,
+      scaledB / scalingFactor
+    );
+}
+</script>
+
+<script id="luminence-maxwell-fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+
+void main()
+{
+    float scaledR = gl_FragCoord.x / 511.0;
+    float scaledG = gl_FragCoord.y / 511.0;
+    float scaledB = 1.0 - gl_FragColor.r - gl_FragColor.g;
+
+    gl_FragColor.rgb = vec3(scaledR * 0.299, scaledG * 0.587, scaledB * 0.114);
+}
+</script>
+
+</head>
+
+<body>
+  <h1>The Maxwell Triangle</h1>
+
+  <hr />
+
+  <canvas id="gl-canvas" width="512" height="512">
+  Oops ... your browser doesn't support the HTML5 canvas element
+  </canvas>
+
+  <hr />
+
+  <button id='selectSingle'>Show Single Color</button>
+  <button id='selectMaxwell'>Show Maxwell</button>
+  <button id='selectVibrant'>Show Vibrant Maxwell</button>
+  <button id='selectLuminence'>Show Luminence Maxwell</button>
+</body>
+</html>
