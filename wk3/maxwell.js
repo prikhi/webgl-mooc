@@ -9,11 +9,6 @@ var points = [
     vec2(  0,  1 ),
     vec2(  1, -1 )
 ];
-var colors = [
-  1, 0, 0,
-  0, 1, 0,
-  0, 0, 1
-];
 
 window.onload = function init() {
     canvas = document.getElementById( "gl-canvas" );
@@ -49,47 +44,29 @@ window.onload = function init() {
     render();
 };
 
+/* Show a red Triangle */
+function singleColor() { loadAndRender('red-fragment-shader'); }
+
+/* Show a Maxwell Triangle */
+function maxwellColor() { loadAndRender('maxwell-fragment-shader'); }
+
+/* Show a Maxwell Triangle with scaled values */
+function vibrantColor() { loadAndRender("vibrant-maxwell-fragment-shader"); }
+
+/* Show a Maxwell Triangle with luminence values */
+function luminenceColor() { loadAndRender("luminence-maxwell-fragment-shader"); }
+
+/* Load Shader & Re-Render */
+function loadAndRender(fragmentShader) {
+    var program = initShaders(gl, "vertex-shader", fragmentShader);
+    gl.useProgram(program);
+    render();
+}
+
 function render() {
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, points.length);
 }
 
-/* Show a red Triangle */
-function singleColor() {
-    //  Load shaders and initialize attribute buffers
-    var program = initShaders(gl, "vertex-shader", "red-fragment-shader");
-    gl.useProgram(program);
-
-    render();
-}
-
-/* Show a Maxwell Triangle */
-function maxwellColor() {
-    //  Load shaders and initialize attribute buffers
-    var program = initShaders(gl, "vertex-shader", "maxwell-fragment-shader");
-    gl.useProgram(program);
-
-    render();
-}
-
-/* Show a Maxwell Triangle with scaled values */
-function vibrantColor() {
-    //  Load shaders and initialize attribute buffers
-    var program = initShaders(
-      gl, "vertex-shader", "vibrant-maxwell-fragment-shader");
-    gl.useProgram(program);
-
-    render();
-}
-
-/* Show a Maxwell Triangle with luminence values */
-function luminenceColor() {
-    //  Load shaders and initialize attribute buffers
-    var program = initShaders(
-      gl, "vertex-shader", "luminence-maxwell-fragment-shader");
-    gl.useProgram(program);
-
-    render();
-}
 
 })();
