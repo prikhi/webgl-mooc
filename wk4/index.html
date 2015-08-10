@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+  <title>Drawing Lines</title>
+  <script type="text/javascript" src="../common/webgl-utils.js"></script>
+  <script type="text/javascript" src="../common/initShaders.js"></script>
+  <script type="text/javascript" src="../common/MV.js"></script>
+  <script type="text/javascript" src="index.js"></script>
+
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+attribute vec2 vPosition;
+
+void main()
+{
+    gl_Position = vec4(vPosition.x, vPosition.y, 1.0, 1.0);
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+
+void main()
+{
+    gl_FragColor = vec4(0, 0, 0, 1);
+}
+</script>
+</head>
+
+<body>
+  <small><a href='../index.html'>Home</a></small>
+  <h1>Drawing Lines</h1>
+
+  <hr />
+
+  <canvas id="gl-canvas" width="512" height="512">
+  Oops ... your browser doesn't support the HTML5 canvas element
+  </canvas>
+  
+  <hr />
+  <input id='strokeWidth' type='number' min='1' step='1' value='5' />
+  <label for='strokeWidth'>Stroke Width</label>
+
+</body>
+</html>
