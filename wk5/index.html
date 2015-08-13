@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+  <title>CAD I</title>
+  <script type="text/javascript" src="../common/webgl-utils.js"></script>
+  <script type="text/javascript" src="../common/initShaders.js"></script>
+  <script type="text/javascript" src="../common/MV.js"></script>
+  <script type="text/javascript" src="index.js"></script>
+
+  <style>fieldset { float: left; }</style>
+
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+attribute vec4 vPosition;
+
+void main()
+{
+    gl_Position = vPosition;
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+
+void main()
+{
+    gl_FragColor = vec4(0, 0, 0, 1);
+}
+</script>
+</head>
+
+<body>
+  <small><a href='../index.html'>Home</a></small>
+  <h1>CAD I</h1>
+
+  <hr />
+
+  <canvas id="gl-canvas" width="512" height="512">
+  Oops ... your browser doesn't support the HTML5 canvas element
+  </canvas>
+
+  <hr />
+
+  <fieldset>
+    <legend>Type</legend>
+
+    <input id='sphere' type='radio' name='type' value='sphere' checked />Sphere
+    <br />
+    <input id='cone' type='radio' name='type' value='cone' />Cone
+    <br />
+    <input id='cylinder' type='radio' name='type' value='cylinder' />Cylinder
+    <br />
+    <input id='radius' type='range' min='10' max='510' step='10' value='300' />
+    <label for='radius'>Radius: <span id='rad'>300</span></label>
+    <br />
+    <input id='height' type='range' min='10' max='510' step='10' value='300' />
+    <label for='height'>Height: <span id='hei'>300</span></label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Position</legend>
+    <small>Click to re-position</small><br />
+    <label for='xPos'>X: </label><span id='xPos'>0.0</span><br />
+    <label for='yPos'>Y: </label><span id='yPos'>0.0</span>
+  </fieldset>
+
+  <fieldset>
+    <legend>Scale</legend>
+
+    <input id='xScale' type='range' min='0.25' max='5' value='1' step='0.25'/>
+    <label for='xScale'>X-axis: <span id='xSca'>1.0</span></label>
+    <br />
+
+    <input id='yScale' type='range' min='0.25' max='5' value='1' step='0.25'/>
+    <label for='yScale'>Y-axis: <span id='ySca'>1.0</span></label>
+    <br />
+
+    <input id='zScale' type='range' min='0.25' max='5' value='1' step='0.25'/>
+    <label for='zScale'>Z-axis: <span id='zSca'>1.0</span></label>
+    <br />
+  </fieldset>
+
+  <fieldset>
+    <legend>Rotation</legend>
+
+    <input id='xRotation' type='range' min='0' max='360' step='5'/>
+    <label for='xRotation'>X-axis: <span id='xRot'></span></label>
+    <br />
+
+    <input id='yRotation' type='range' min='0' max='360' step='5'/>
+    <label for='yRotation'>Y-axis: <span id='yRot'></span></label>
+    <br />
+
+    <input id='zRotation' type='range' min='0' max='360' step='5'/>
+    <label for='zRotation'>Z-axis: <span id='zRot'></span></label>
+  </fieldset>
+
+  <br style='clear:both;' />
+  <br />
+
+  <button id='add'>Add to Figure</button>
+  <button id='reset'>Clear &amp; Reset</button>
+
+</body>
+</html>
+
