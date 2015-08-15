@@ -11,11 +11,18 @@
 
   <script id="vertex-shader" type="x-shader/x-vertex">
 attribute vec4 vPosition;
+uniform float uTheta;
+uniform float uFactor;
 
 void
 main()
 {
-    gl_Position = vPosition;
+  float distance, theta;
+  distance = sqrt((vPosition.x * vPosition.x) + (vPosition.y * vPosition.y));
+  theta = uTheta * distance * uFactor;
+  gl_Position.x = (vPosition.x * cos(theta)) - (vPosition.y * sin(theta));
+  gl_Position.y = (vPosition.x * sin(theta)) + (vPosition.y * cos(theta));
+  gl_Position.zw = vec2(0.0, 1.0);
 }
   </script>
 

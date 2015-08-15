@@ -32,9 +32,14 @@ function init()
     gl.bufferData( gl.ARRAY_BUFFER, 8*Math.pow(4, 6), gl.STATIC_DRAW );
 
     // Associate out shader variables with our data buffer
-    var vPosition = gl.getAttribLocation( program, "vPosition" );
-    gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
-    gl.enableVertexAttribArray( vPosition );
+    var vPosition = gl.getAttribLocation(program, "vPosition");
+    gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(vPosition);
+
+    var uTheta = gl.getUniformLocation(program, "uTheta");
+    gl.uniform1f(uTheta, Theta);
+    var uFactor = gl.getUniformLocation(program, "uFactor");
+    gl.uniform1f(uFactor, DistanceFactor);
 
     // Set Event Handlers
     document.getElementById('recursionDepth').onchange = function() {
@@ -43,10 +48,12 @@ function init()
     }
     document.getElementById('theta').onchange = function() {
       Theta = this.value;
+      gl.uniform1f(uTheta, Theta);
       render();
     }
     document.getElementById('distanceFactor').onchange = function() {
       DistanceFactor = this.value;
+      gl.uniform1f(uFactor, DistanceFactor);
       render();
     }
 
@@ -93,23 +100,11 @@ function render()
         vec2(  0.75, -0.75 )
     ];
     points = [];
-    divideTriangle( vertices[0], vertices[1], vertices[2],
-                    NumTimesToSubdivide);
-
-    rotatePoints(Theta, DistanceFactor);
+    divideTriangle(vertices[0], vertices[1], vertices[2], NumTimesToSubdivide);
 
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(points));
     gl.clear( gl.COLOR_BUFFER_BIT );
     gl.drawArrays( gl.TRIANGLES, 0, points.length );
 }
 
-function rotatePoints(theta, distanceFactor) {
-  points = points.map(function(point) {
-    var x = point[0], y = point[1];
-    var distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-    var weightedTheta = theta * distance * distanceFactor;
-    var newX = (x * Math.cos(weightedTheta)) - (y * Math.sin(weightedTheta));
-    var newY = (x * Math.sin(weightedTheta)) + (y * Math.cos(weightedTheta));
-    return [newX, newY];
-  });
 }
