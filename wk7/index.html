@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+  <title>CAD II</title>
+  <script type="text/javascript" src="../common/webgl-utils.js"></script>
+  <script type="text/javascript" src="../common/initShaders.js"></script>
+  <script type="text/javascript" src="../common/MV.js"></script>
+  <script type="text/javascript" src="index.js"></script>
+
+  <style>fieldset { float: left; }</style>
+
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+attribute vec4 vPosition;
+attribute vec4 vNormal;
+uniform mat4 uModelViewMatrix;
+uniform mat4 uProjectionMatrix;
+
+uniform bool uEnableAmbient;
+uniform bool uEnableDiffuse;
+uniform bool uEnableSpecular;
+
+uniform vec4 uAmbientProduct, uDiffuseProduct, uSpecularProduct;
+uniform vec4 uLightPosition;
+uniform float uShininess;
+
+uniform float uDiffuseTheta, uSpecularTheta;
+
+
+varying vec4 fColor;
+
+void main()
+{
+  vec3 pos = -(uModelViewMatrix * vPosition).xyz;
+  vec3 E = normalize(-pos);
+  vec3 N = normalize((uModelViewMatrix * vNormal).xyz);
+
+  vec4 ambient;
+  if (uEnableAmbient) {
+    ambient = uAmbientProduct;
+  } else {
+    ambient = vec4(0.0, 0.0, 0.0, 1.0);
+  }
+
+  vec4 diffuse;
+  if (uEnableDiffuse) {
+    vec3 diffuseLight = vec3(sin(uDiffuseTheta), 0.0, cos(uDiffuseTheta));
+    vec3 diffuseL = normalize(diffuseLight - pos);
+    float Kd = max(dot(diffuseL, N), 0.0);
+    diffuse = Kd * uDiffuseProduct;
+  } else {
+    diffuse = vec4(0.0, 0.0, 0.0, 1.0);
+  }
+
+  vec4 specular;
+  if (uEnableSpecular) {
+    vec3 specularLight = vec3(cos(-uSpecularTheta), 0.0, sin(-uSpecularTheta));
+    vec3 specularL = normalize(specularLight - pos);
+    vec3 specularH = normalize(specularL + E);
+    float Ks = pow(max(dot(N, specularH), 0.0), uShininess);
+    specular = Ks * uSpecularProduct;
+    if (dot(specularL, N) < 0.0) {
+      specular = vec4(0.0, 0.0, 0.0, 1.0);
+    }
+  } else {
+    specular = vec4(0.0, 0.0, 0.0, 1.0);
+  }
+
+  gl_Position = uProjectionMatrix * uModelViewMatrix * vPosition;
+
+  fColor = ambient + diffuse + specular;
+  fColor.a = 1.0;
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+varying vec4 fColor;
+
+void main() { gl_FragColor = fColor; }
+</script>
+</head>
+
+<body>
+  <small><a href='../index.html'>Home</a></small>
+  <h1>CAD II</h1>
+
+  <hr />
+
+  <canvas id="gl-canvas" width="512" height="512">
+  Oops ... your browser doesn't support the HTML5 canvas element
+  </canvas>
+
+  <hr />
+
+  <fieldset>
+    <legend>Ambient Light</legend>
+
+    <input id='enableAmbient' type='checkbox' checked />
+    <label for='enableAmbient'>Enabled</label>
+    <br />
+
+    <input id='ambientLevel' type='range' min='0' max='1' step='0.025' value='0.075' />
+    <label for='ambientLevel'>Level</label>
+    <br />
+
+    <input id='ambientR' type='range' min='0' max='255' step='1' value='255' />
+    <label for='ambientR'>R</label>
+    <br />
+    <input id='ambientG' type='range' min='0' max='255' step='1' value='0' />
+    <label for='ambientG'>G</label>
+    <br />
+    <input id='ambientB' type='range' min='0' max='255' step='1' value='255' />
+    <label for='ambientB'>B</label>
+    <br />
+
+  </fieldset>
+
+  <fieldset>
+    <legend>Diffuse Light</legend>
+
+    <input id='enableDiffuse' type='checkbox' checked />
+    <label for='enableDiffuse'>Enabled</label>
+    <button id='rotateDiffuse'>Toggle Rotation</button>
+    <br />
+
+    <input id='diffuseLevel' type='range' min='0' max='1' step='0.1' value='0.5'/>
+    <label for='diffuseLevel'>Level</label>
+    <br />
+
+    <input id='diffuseR' type='range' min='0' max='255' step='1' value='200' />
+    <label for='diffuseR'>R</label>
+    <br />
+    <input id='diffuseG' type='range' min='0' max='255' step='1' value='150' />
+    <label for='diffuseG'>G</label>
+    <br />
+    <input id='diffuseB' type='range' min='0' max='255' step='1' value='90' />
+    <label for='diffuseB'>B</label>
+    <br />
+
+  </fieldset>
+
+  <fieldset>
+    <legend>Specular Light</legend>
+
+    <input id='enableSpecular' type='checkbox' checked />
+    <label for='enableSpecular'>Enabled</label>
+    <button id='rotateSpecular'>Toggle Rotation</button>
+    <br />
+
+    <input id='specularLevel' type='range' min='0' max='1' step='0.1' value='0.8'/>
+    <label for='specularLevel'>Level</label>
+    <br />
+
+    <input id='specularR' type='range' min='0' max='255' step='1' value='255' />
+    <label for='specularR'>R</label>
+    <br />
+    <input id='specularG' type='range' min='0' max='255' step='1' value='125' />
+    <label for='specularG'>G</label>
+    <br />
+    <input id='specularB' type='range' min='0' max='255' step='1' value='110' />
+    <label for='specularB'>B</label>
+    <br />
+
+  </fieldset>
+
+  <div style='clear:both;'/></div>
+
+  <fieldset>
+    <legend>Material Properties</legend>
+      <input id='shininess' type='range' min='5' max='200' step='1' value='50' />
+      <label for='shininess'>Shininess</label>
+    <div style='clear:both;'/></div>
+
+    <fieldset>
+      <legend>Ambient Absorption</legend>
+      <input id='materialAmbientR' type='range' min='0' max='255' step='1' value='190' />
+      <label for='materialAmbientR'>R</label>
+      <br />
+      <input id='materialAmbientG' type='range' min='0' max='255' step='1' value='255' />
+      <label for='materialAmbientG'>G</label>
+      <br />
+      <input id='materialAmbientB' type='range' min='0' max='255' step='1' value='190' />
+      <label for='materialAmbientB'>B</label>
+      <br />
+    </fieldset>
+    <fieldset>
+      <legend>Diffuse Absorption</legend>
+      <input id='materialDiffuseR' type='range' min='0' max='255' step='1' value='205' />
+      <label for='materialDiffuseR'>R</label>
+      <br />
+      <input id='materialDiffuseG' type='range' min='0' max='255' step='1' value='190' />
+      <label for='materialDiffuseG'>G</label>
+      <br />
+      <input id='materialDiffuseB' type='range' min='0' max='255' step='1' value='51' />
+      <label for='materialDiffuseB'>B</label>
+      <br />
+    </fieldset>
+    <fieldset>
+      <legend>Specular Absorption</legend>
+      <input id='materialSpecularR' type='range' min='0' max='255' step='1' value='65' />
+      <label for='materialSpecularR'>R</label>
+      <br />
+      <input id='materialSpecularG' type='range' min='0' max='255' step='1' value='165' />
+      <label for='materialSpecularG'>G</label>
+      <br />
+      <input id='materialSpecularB' type='range' min='0' max='255' step='1' value='240' />
+      <label for='materialSpecularB'>B</label>
+      <br />
+    </fieldset>
+  </fieldset>
+
+
+</body>
+</html>
